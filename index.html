@@ -1,0 +1,766 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>বিতর্ক পোস্টার ও স্ক্রিপ্ট - কৃত্রিম বুদ্ধিমত্তা</title>
+
+  <!-- Google Fonts Import -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;500;600;700;800&family=Noto+Sans+Bengali:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap" rel="stylesheet">
+
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <style>
+    /* CSS Variables for Script Themes */
+    :root {
+      /* Theme 1: Blue (সূচনা, পরিচয় ও অবস্থান) */
+      --blue-bg: #f0f7ff;
+      --blue-border: #93c5fd;
+      --blue-accent: #1d4ed8;
+      --blue-dark: #1e3a8a;
+      --blue-hl-bg: #dbeafe;
+      --blue-hl-text: #1e40af;
+
+      /* Theme 2: Green (মূল যুক্তি, ব্যাখ্যা ও প্রমাণ) */
+      --green-bg: #f0fdf4;
+      --green-border: #86efac;
+      --green-accent: #15803d;
+      --green-dark: #14532d;
+      --green-hl-bg: #dcfce7;
+      --green-hl-text: #166534;
+
+      /* Theme 3: Red (প্রতিপক্ষের বক্তব্য, প্রশ্ন ও যৌক্তিক খণ্ডন) */
+      --red-bg: #fef2f2;
+      --red-border: #fca5a5;
+      --red-accent: #b91c1c;
+      --red-dark: #7f1d1d;
+      --red-hl-bg: #fee2e2;
+      --red-hl-text: #991b1b;
+
+      /* Theme 4: Yellow/Golden (সারসংক্ষেপ, চূড়ান্ত বক্তব্য ও সমাপ্তি) */
+      --yellow-bg: #fffbeb;
+      --yellow-border: #fde047;
+      --yellow-accent: #b45309;
+      --yellow-dark: #78350f;
+      --yellow-hl-bg: #fef3c7;
+      --yellow-hl-text: #92400e;
+
+      /* General Styles */
+      --text-main: #27272a;
+      --page-padding: 20mm 20mm 20mm 20mm;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      -webkit-print-color-adjust: exact !important;
+      print-color-adjust: exact !important;
+    }
+
+    body {
+      font-family: 'Hind Siliguri', 'Noto Sans Bengali', 'Plus Jakarta Sans', sans-serif;
+      background-color: #cbd5e1;
+      color: var(--text-main);
+      font-size: 15.5px;
+      line-height: 1.8;
+      word-spacing: 0.5px;
+    }
+
+    /* Outer Container for Web Viewing */
+    .document-container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 25px 0;
+    }
+
+    /* Strict A4 Poster Styling */
+    .a4-poster {
+      width: 210mm;
+      height: 297mm;
+      position: relative;
+      background: radial-gradient(circle at 20% 15%, #ffffff 0%, #f0f6ff 50%, #e8f1fd 100%);
+      overflow: hidden;
+      color: #0f172a;
+      box-shadow: 0 12px 28px rgba(0, 0, 0, 0.12);
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      padding: 16mm 16mm 14mm 16mm;
+      margin-bottom: 30px;
+      page-break-after: always;
+      break-after: page;
+    }
+
+    /* Poster Tech Grid & Glow Orbs */
+    .tech-grid-light {
+      position: absolute;
+      inset: 0;
+      background-image: 
+        linear-gradient(to right, rgba(2, 132, 199, 0.05) 1px, transparent 1px),
+        linear-gradient(to bottom, rgba(2, 132, 199, 0.05) 1px, transparent 1px);
+      background-size: 10mm 10mm;
+      pointer-events: none;
+    }
+
+    .glow-orb-light-1 {
+      position: absolute;
+      top: -60px;
+      right: -60px;
+      width: 350px;
+      height: 350px;
+      background: radial-gradient(circle, rgba(56, 189, 248, 0.22) 0%, rgba(255,255,255,0) 70%);
+      border-radius: 50%;
+      pointer-events: none;
+    }
+
+    .glow-orb-light-2 {
+      position: absolute;
+      bottom: 40px;
+      left: -80px;
+      width: 400px;
+      height: 400px;
+      background: radial-gradient(circle, rgba(99, 102, 241, 0.15) 0%, rgba(255,255,255,0) 70%);
+      border-radius: 50%;
+      pointer-events: none;
+    }
+
+    /* Speaker Card Styles */
+    .speaker-section-top {
+      position: relative;
+      margin-top: 15px;
+      margin-bottom: 20px;
+      display: flex;
+      align-items: center;
+    }
+
+    .circle-photo-wrapper {
+      position: relative;
+      width: 185px;
+      height: 185px;
+      flex-shrink: 0;
+      z-index: 20;
+    }
+
+    .outer-orbit-ring {
+      position: absolute;
+      inset: -10px;
+      border-radius: 50%;
+      border: 2px dashed rgba(2, 132, 199, 0.35);
+      animation: spin 35s linear infinite;
+    }
+
+    .inner-glow-ring {
+      position: absolute;
+      inset: -4px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #0284c7, #6366f1, #38bdf8);
+      padding: 4px;
+      box-shadow: 0 10px 25px rgba(2, 132, 199, 0.25);
+    }
+
+    .photo-inner {
+      width: 100%;
+      height: 100%;
+      border-radius: 50%;
+      background-color: #f1f5f9;
+      overflow: hidden;
+      position: relative;
+      border: 3px solid #ffffff;
+    }
+
+    .speaker-img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: center top;
+    }
+
+    .connected-name-card {
+      position: relative;
+      margin-left: -35px;
+      padding: 20px 24px 20px 48px;
+      background: linear-gradient(110deg, #ffffff 0%, #f8fafc 100%);
+      border: 1px solid rgba(2, 132, 199, 0.25);
+      border-left: none;
+      border-radius: 0 24px 24px 0;
+      box-shadow: 0 12px 30px rgba(15, 23, 42, 0.08), inset 0 1px 0 rgba(255, 255, 255, 0.8);
+      flex-grow: 1;
+      z-index: 10;
+    }
+
+    .card-bridge-accent {
+      position: absolute;
+      left: 0;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 5px;
+      height: 65%;
+      background: linear-gradient(to bottom, #0284c7, #6366f1);
+      box-shadow: 0 0 10px rgba(2, 132, 199, 0.4);
+      border-radius: 3px;
+    }
+
+    .bengali-title {
+      font-family: 'Hind Siliguri', sans-serif;
+      line-height: 1.25;
+    }
+
+    .english-sub {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      letter-spacing: 0.06em;
+    }
+
+    .topic-card-light {
+      background: linear-gradient(135deg, rgba(255, 255, 255, 0.95) 0%, rgba(240, 246, 255, 0.9) 100%);
+      border: 1px solid rgba(2, 132, 199, 0.2);
+      border-left: 5px solid #0284c7;
+      box-shadow: 0 15px 35px rgba(15, 23, 42, 0.06);
+      border-radius: 0 20px 20px 0;
+    }
+
+    .highlight-danger-light {
+      color: #e11d48;
+      font-weight: 800;
+    }
+
+    .highlight-blessing-light {
+      color: #0284c7;
+      font-weight: 800;
+    }
+
+    @keyframes spin {
+      from { transform: rotate(0deg); }
+      to { transform: rotate(360deg); }
+    }
+
+    /* Script Page Dimensions */
+    .page {
+      width: 210mm;
+      height: 297mm;
+      padding: var(--page-padding);
+      background-color: #ffffff;
+      position: relative;
+      overflow: hidden;
+      box-shadow: 0 12px 28px rgba(0, 0, 0, 0.12);
+      margin-bottom: 30px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      page-break-after: always;
+      break-after: page;
+    }
+
+    .page-content {
+      flex-grow: 1;
+    }
+
+    .document-header {
+      border-bottom: 1px solid #e2e8f0;
+      padding-bottom: 6px;
+      margin-bottom: 16px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 12px;
+      color: #64748b;
+      font-weight: 500;
+    }
+
+    .segment-title-box {
+      padding: 10px 16px;
+      border-radius: 6px;
+      margin-top: 14px;
+      margin-bottom: 14px;
+      font-size: 17.5px;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      border-left: 6px solid;
+    }
+
+    .seg-blue {
+      background-color: var(--blue-bg);
+      border-color: var(--blue-accent);
+      color: var(--blue-dark);
+    }
+
+    .seg-green {
+      background-color: var(--green-bg);
+      border-color: var(--green-accent);
+      color: var(--green-dark);
+    }
+
+    .seg-red {
+      background-color: var(--red-bg);
+      border-color: var(--red-accent);
+      color: var(--red-dark);
+    }
+
+    .seg-yellow {
+      background-color: var(--yellow-bg);
+      border-color: var(--yellow-accent);
+      color: var(--yellow-dark);
+    }
+
+    .script-paragraph {
+      margin-bottom: 12px;
+      text-align: justify;
+      text-justify: inter-word;
+      color: #1f2937;
+      break-inside: avoid;
+    }
+
+    /* Highlight Tags & Keywords */
+    .hl-blue-ref {
+      background-color: var(--blue-hl-bg);
+      color: var(--blue-hl-text);
+      padding: 2px 6px;
+      border-radius: 4px;
+      font-weight: 600;
+      border: 1px solid var(--blue-border);
+      box-decoration-break: clone;
+      -webkit-box-decoration-break: clone;
+    }
+
+    .hl-blue-kw {
+      background-color: #eff6ff;
+      color: var(--blue-dark);
+      padding: 1px 5px;
+      border-radius: 3px;
+      font-weight: 600;
+      border-bottom: 2px solid var(--blue-accent);
+      box-decoration-break: clone;
+      -webkit-box-decoration-break: clone;
+    }
+
+    .hl-green-ref {
+      background-color: var(--green-hl-bg);
+      color: var(--green-hl-text);
+      padding: 2px 6px;
+      border-radius: 4px;
+      font-weight: 600;
+      border: 1px solid var(--green-border);
+      box-decoration-break: clone;
+      -webkit-box-decoration-break: clone;
+    }
+
+    .hl-green-kw {
+      background-color: #f0fdf4;
+      color: var(--green-dark);
+      padding: 1px 5px;
+      border-radius: 3px;
+      font-weight: 600;
+      border-bottom: 2px solid var(--green-accent);
+      box-decoration-break: clone;
+      -webkit-box-decoration-break: clone;
+    }
+
+    .hl-red-ref {
+      background-color: var(--red-hl-bg);
+      color: var(--red-hl-text);
+      padding: 2px 6px;
+      border-radius: 4px;
+      font-weight: 600;
+      border: 1px solid var(--red-border);
+      box-decoration-break: clone;
+      -webkit-box-decoration-break: clone;
+    }
+
+    .hl-red-kw {
+      background-color: #fef2f2;
+      color: var(--red-dark);
+      padding: 1px 5px;
+      border-radius: 3px;
+      font-weight: 600;
+      border-bottom: 2px solid var(--red-accent);
+      box-decoration-break: clone;
+      -webkit-box-decoration-break: clone;
+    }
+
+    .hl-yellow-ref {
+      background-color: var(--yellow-hl-bg);
+      color: var(--yellow-hl-text);
+      padding: 2px 6px;
+      border-radius: 4px;
+      font-weight: 600;
+      border: 1px solid var(--yellow-border);
+      box-decoration-break: clone;
+      -webkit-box-decoration-break: clone;
+    }
+
+    .hl-yellow-kw {
+      background-color: #fffbeb;
+      color: var(--yellow-dark);
+      padding: 1px 5px;
+      border-radius: 3px;
+      font-weight: 600;
+      border-bottom: 2px solid var(--yellow-accent);
+      box-decoration-break: clone;
+      -webkit-box-decoration-break: clone;
+    }
+
+    .page-footer {
+      width: 100%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding-top: 10px;
+      border-top: 1px dashed #e2e8f0;
+      margin-top: auto;
+    }
+
+    .page-number-circle {
+      width: 26px;
+      height: 26px;
+      border-radius: 50%;
+      border: 1.5px solid #64748b;
+      color: #334155;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 13px;
+      font-weight: 600;
+      background-color: #ffffff;
+    }
+
+    /* Print Configuration */
+    @page {
+      size: A4 portrait;
+      margin: 0;
+    }
+
+    @media print {
+      body {
+        background: none !important;
+        padding: 0 !important;
+      }
+      .document-container {
+        padding: 0 !important;
+      }
+      .a4-poster, .page {
+        box-shadow: none !important;
+        margin: 0 !important;
+        border: none !important;
+        width: 210mm !important;
+        height: 297mm !important;
+        page-break-after: always !important;
+        break-after: page !important;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="document-container">
+
+    <!-- ==================== SECTION 1: POSTER ==================== -->
+    <div class="a4-poster">
+        
+        <!-- Light Theme Ambient Layers -->
+        <div class="tech-grid-light"></div>
+        <div class="glow-orb-light-1"></div>
+        <div class="glow-orb-light-2"></div>
+
+        <!-- Decorative Top Corner Accent -->
+        <div class="absolute top-0 right-0 w-36 h-36 pointer-events-none opacity-25">
+            <svg viewBox="0 0 100 100" fill="none" stroke="#0284c7">
+                <circle cx="100" cy="0" r="80" stroke-width="1.5" stroke-dasharray="4 4" />
+                <circle cx="100" cy="0" r="60" stroke-width="1.5" />
+                <circle cx="100" cy="0" r="40" stroke-width="1" />
+            </svg>
+        </div>
+
+        <!-- HEADER SECTION -->
+        <header class="relative z-10 pt-2">
+            <div class="flex items-center justify-between border-b border-sky-200 pb-3">
+                <div class="flex items-center gap-3">
+                    <div class="w-9 h-9 rounded-xl bg-sky-50 border border-sky-300 flex items-center justify-center shadow-sm">
+                        <svg class="w-5 h-5 text-sky-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"></path>
+                        </svg>
+                    </div>
+                    <div>
+                        <p class="english-sub text-xs font-bold text-sky-600 uppercase tracking-wider">Official Speaker Presentation</p>
+                        <h2 class="english-sub text-sm font-extrabold tracking-widest text-slate-800">INTER-SCHOOL DEBATE 2026</h2>
+                    </div>
+                </div>
+                
+                <div class="px-3.5 py-1 rounded-full bg-sky-100/80 border border-sky-300 text-[11px] english-sub font-bold text-sky-700 tracking-wider">
+                    GRAND FINALS
+                </div>
+            </div>
+        </header>
+
+        <!-- SPEAKER SECTION -->
+        <section class="speaker-section-top relative z-10">
+            
+            <div class="circle-photo-wrapper">
+                <div class="outer-orbit-ring"></div>
+                <div class="inner-glow-ring">
+                    <div class="photo-inner">
+                        <img 
+                            class="speaker-img" 
+                            src="https://share.google/3EITxKRZgmKBgEPiA" 
+                            alt="Nadim Hosen"
+                            onerror="this.onerror=null; this.src='data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\' viewBox=\'0 0 200 200\'><rect width=\'200\' height=\'200\' fill=\'%23f1f5f9\'/><circle cx=\'100\' cy=\'80\' r=\'60\' fill=\'%230284c7\' opacity=\'0.2\'/><path d=\'M35 200 C35 155, 60 140, 100 140 C140 140, 165 155, 165 200 Z\' fill=\'%230f172a\'/><circle cx=\'100\' cy=\'85\' r=\'32\' fill=\'%23f8fafc\'/></svg>';"
+                        />
+                    </div>
+                </div>
+                
+                <div class="absolute -top-1 right-2 w-3.5 h-3.5 rounded-full bg-sky-500 border-2 border-white shadow-md"></div>
+                <div class="absolute bottom-2 -left-1 w-3 h-3 rounded-full bg-indigo-500 border-2 border-white shadow-md"></div>
+            </div>
+
+            <div class="connected-name-card">
+                <div class="card-bridge-accent"></div>
+                
+                <div class="flex flex-col">
+                    <div class="inline-flex items-center gap-1.5 mb-1.5">
+                        <span class="px-3 py-0.5 rounded-full bg-sky-100 border border-sky-300 text-[11px] font-bold text-sky-700 english-sub">
+                            1st Speaker • Class 10
+                        </span>
+                    </div>
+
+                    <h3 class="bengali-title text-3xl font-extrabold text-slate-900 tracking-tight">
+                        নাদিম হোসেন
+                    </h3>
+
+                    <p class="english-sub text-xs font-bold text-sky-600 tracking-wider uppercase mt-0.5">
+                        Nadim Hosen
+                    </p>
+                </div>
+            </div>
+
+        </section>
+
+        <!-- DEBATE TOPIC SECTION -->
+        <section class="relative z-10 my-auto py-2">
+            
+            <div class="flex items-center gap-2 mb-3">
+                <span class="w-2.5 h-2.5 rounded-full bg-sky-500 animate-pulse"></span>
+                <span class="text-xs font-bold text-slate-600 tracking-wide">বিতর্কের বিষয়বস্তু (Debate Topic)</span>
+                <div class="h-[1px] flex-grow bg-gradient-to-r from-sky-300 to-transparent"></div>
+            </div>
+
+            <div class="topic-card-light p-7 relative overflow-hidden">
+                <div class="absolute -right-4 -bottom-6 text-sky-900/5 pointer-events-none select-none">
+                    <svg class="w-36 h-36" fill="currentColor" viewBox="0 0 24 24">
+                        <path d="M14.017 21v-7.391c0-5.704 3.731-9.57 8.983-10.609l.995 2.151c-2.432.917-3.995 3.638-3.995 5.849h4v10h-9.983zm-14.017 0v-7.391c0-5.704 3.748-9.57 9-10.609l.996 2.151c-2.433.917-3.996 3.638-3.996 5.849h3.983v10h-9.983z"/>
+                    </svg>
+                </div>
+
+                <h1 class="bengali-title text-[28px] font-bold leading-relaxed text-slate-900 tracking-normal">
+                    “কৃত্রিম বুদ্ধিমত্তা <span class="text-sky-600 font-extrabold">(AI)</span><br/>
+                    মানব সভ্যতার জন্য<br/>
+                    <span class="highlight-blessing-light">আশীর্বাদ নয়</span>, বরং <span class="highlight-danger-light">হুমকি</span>…”
+                </h1>
+
+                <div class="mt-5 pt-3.5 border-t border-sky-100 flex items-center justify-between text-xs text-slate-500 font-medium">
+                    <span class="flex items-center gap-1.5">
+                        <svg class="w-4 h-4 text-sky-600" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
+                        </svg>
+                        পক্ষে / বিপক্ষে যুক্তি নির্ভর জাতীয় বিতর্ক মঞ্চ
+                    </span>
+                    <span class="english-sub text-[11px] text-sky-700 font-bold uppercase tracking-widest bg-sky-50 px-2 py-0.5 rounded border border-sky-200">Motion #04</span>
+                </div>
+            </div>
+
+        </section>
+
+        <!-- POSTER FOOTER SECTION -->
+        <footer class="relative z-10 border-t border-sky-200/80 pt-4 pb-1">
+            <div class="grid grid-cols-3 gap-3 text-center">
+                <div class="p-3 rounded-xl bg-white border border-sky-100 shadow-sm flex flex-col items-center justify-center">
+                    <svg class="w-4 h-4 text-sky-600 mb-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"></path>
+                    </svg>
+                    <span class="text-[10px] text-slate-500 block font-semibold">আয়োজক</span>
+                    <span class="bengali-title text-xs font-bold text-slate-800">কেন্দ্রীয় বিতর্ক পরিষদ</span>
+                </div>
+
+                <div class="p-3 rounded-xl bg-white border border-sky-100 shadow-sm flex flex-col items-center justify-center">
+                    <svg class="w-4 h-4 text-sky-600 mb-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path>
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                    </svg>
+                    <span class="text-[10px] text-slate-500 block font-semibold">স্থান</span>
+                    <span class="bengali-title text-xs font-bold text-slate-800">প্রধান মিলনায়তন</span>
+                </div>
+
+                <div class="p-3 rounded-xl bg-white border border-sky-100 shadow-sm flex flex-col items-center justify-center">
+                    <svg class="w-4 h-4 text-sky-600 mb-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                    </svg>
+                    <span class="text-[10px] text-slate-500 block font-semibold">সময়সূচী</span>
+                    <span class="bengali-title text-xs font-bold text-slate-800">সকাল ১০:০০ ঘটিকা</span>
+                </div>
+            </div>
+
+            <div class="mt-4 flex items-center justify-between text-[9px] text-slate-500 english-sub font-semibold">
+                <span>INTER-SCHOOL DEBATE CHAMPIONSHIP SERIES</span>
+                <span class="flex items-center gap-1.5">
+                    <span class="w-2 h-2 rounded-full bg-sky-500"></span>
+                    SPOTLIGHT SERIES
+                </span>
+            </div>
+        </footer>
+
+    </div>
+
+
+    <!-- ==================== SECTION 2: SCRIPT PAGE 1 ==================== -->
+    <div class="page">
+      <div class="page-content">
+        
+        <div class="document-header">
+          <span>আন্তঃবিদ্যালয় বিতর্ক প্রতিযোগিতা — বিপক্ষ দল</span>
+          <span>বক্তা: নাদিম হোসেন (১ম বক্তা)</span>
+        </div>
+
+        <!-- SEGMENT 1 -->
+        <div class="segment-title-box seg-blue">
+          ১. 🎤 সূচনা, পরিচয় ও অবস্থান
+        </div>
+
+        <p class="script-paragraph">
+          সম্মানিত মাননীয় সভাপতি, দূরদৃষ্টিসম্পন্ন বিচারকমণ্ডলী, যুক্তিবাদী গুণী দর্শক এবং মঞ্চের অপর প্রান্তে উপবিষ্ট আমার প্রতিপক্ষ বন্ধুরা—সকলকে জানাই শুভ পূর্বাহ্ণ এবং আন্তরিক শ্রদ্ধা।
+        </p>
+
+        <p class="script-paragraph">
+          আমি নাদিম হোসেন, আজকের <span class="hl-blue-kw">আন্তঃবিদ্যালয় বিতর্ক প্রতিযোগিতায়</span> বিপক্ষ দলের প্রথম বক্তা হিসেবে আপনাদের সামনে উপস্থিত হয়েছি।
+        </p>
+
+        <p class="script-paragraph">
+          মাননীয় সভাপতি, আজকের নির্ধারিত বিতর্কের বিষয়বস্তু প্রস্তাব করা হয়েছে—“<span class="hl-blue-kw">কৃত্রিম বুদ্ধিমত্তা (তথা AI) মানব সভ্যতার জন্য আশীর্বাদ নয়, বরং হুমকি।</span>” বিপক্ষ দলের হয়ে আমি এবং আমার দল এই প্রস্তাবের সরাসরি বিপক্ষে অবস্থান করছি।
+        </p>
+
+        <p class="script-paragraph">
+          আমাদের অবস্থান অত্যন্ত পরিষ্কার: কৃত্রিম বুদ্ধিমত্তা বা AI-এর ব্যবহারিক ক্ষেত্রে কিছু ঝুঁকি, নৈতিক প্রশ্ন বা রূপান্তরকালীন চ্যালেঞ্জ নিশ্চিতভাবেই রয়েছে—আমরা তা অস্বীকার করছি না। কিন্তু সেই ঝুঁকি বা অপব্যবহারকে পুরো প্রযুক্তির মূল সত্তার সঙ্গে এক করে দেখে কৃত্রিম বুদ্ধিমত্তাকে সার্বিকভাবে মানব সভ্যতার জন্য ‘হুমকি’ বলে দাগিয়ে দেওয়া কোনো যুক্তিসঙ্গত দৃষ্টিভঙ্গি হতে পারে না। আগুন যখন প্রথম আবিষ্কৃত হয়েছিল, তখন ঘরবাড়ি পুড়ে যাওয়ার ঝুঁকি ছিল, কিন্তু আগুনকে আমরা হুমকি না বলে মানব সভ্যতার অন্যতম শ্রেষ্ঠ আশীর্বাদ বলেই গণস্বীকৃতি দিয়েছি। <span class="hl-blue-kw">AI-ও ঠিক তেমনই এক বৈপ্লবিক শক্তি।</span>
+        </p>
+
+        <p class="script-paragraph">
+          আজকের বিতর্কে আমরা ধাপে ধাপে প্রমাণ করে দেব, কীভাবে কৃত্রিম বুদ্ধিমত্তা কোনো হুমকি নয়, বরং মানব সভ্যতার অগ্রগতি, সংকট নিরসন এবং সম্ভাবনাকে বহুগুণ বাড়িয়ে দেওয়ার ক্ষেত্রে সর্বাধুনিক ও অনিবার্য এক আশীর্বাদ।
+        </p>
+
+        <!-- SEGMENT 2 (Part 1) -->
+        <div class="segment-title-box seg-green">
+          ২. 🧠 মূল যুক্তি, ব্যাখ্যা ও প্রমাণ
+        </div>
+
+        <p class="script-paragraph">
+          মাননীয় সভাপতি, বিতর্ককে যৌক্তিক ভিত্তি দিতে গিয়ে আমাদের প্রথমেই বুঝতে হবে যে মানব সভ্যতার ইতিহাস আসলে সমস্যা সমাধানের ইতিহাস। আর এই সমাধানের গতিপথকে অভূতপূর্ব রূপ দিয়েছে কৃত্রিম বুদ্ধিমত্তা।
+        </p>
+
+      </div>
+
+      <div class="page-footer">
+        <div class="page-number-circle">1</div>
+      </div>
+    </div>
+
+
+    <!-- ==================== SECTION 3: SCRIPT PAGE 2 ==================== -->
+    <div class="page">
+      <div class="page-content">
+
+        <div class="document-header">
+          <span>আন্তঃবিদ্যালয় বিতর্ক প্রতিযোগিতা — বিপক্ষ দল</span>
+          <span>মূল যুক্তি ও প্রমাণ</span>
+        </div>
+
+        <p class="script-paragraph">
+          আমাদের প্রথম যুক্তি—<span class="hl-green-kw">চিকিৎসাবিজ্ঞান ও জীবনরক্ষায় AI-এর বিপ্লবী অবদান।</span> কৃত্রিম বুদ্ধিমত্তা আজ শুধু প্রসেসিং মেকানিজম নয়, এটি কোটি কোটি মানুষের জীবন বাঁচানোর এক কার্যকর হাতিয়ার। উদাহরণস্বরূপ, ক্যানসারের প্রাথমিক নির্ণয় বা জটিল ড্রাগ ডিসকভারির কথা ভাবুন। যেখানে মানুষের তৈরি ট্র্যাডিশনাল ল্যাব টেস্টে কয়েক মাস বা বছর লেগে যেত, সেখানে AI অ্যালগরিদম মাত্র কয়েক সেকেন্ডে কোটি কোটি প্রোটিন স্ট্রাকচার বিশ্লেষণ করে রোগ নির্ণয় করতে সক্ষম হচ্ছে। <span class="hl-green-ref">World Health Organization (WHO)</span>-এর সাম্প্রতিক তথ্য বিশ্লেষণ করলে দেখা যায়, বিশ্বব্যাপী বিশেষ করে স্বল্পোন্নত ও উন্নয়নশীল দেশগুলোতে বিশেষজ্ঞ ডাক্তারের তীব্র সংকট রয়েছে। AI-ভিত্তিক ডায়াগনস্টিক টুলস এই ব্যবধান পূরণ করে দুর্গম অঞ্চলের মানুষের কাছে প্রাথমিক স্বাস্থ্যসেবা পৌঁছে দিচ্ছে। <span class="hl-green-ref">Stanford AI Index Report 2024</span> স্পষ্ট তুলে ধরেছে কীভাবে বায়োমেডিকেল ক্ষেত্র এবং জিনোম সিকোয়েন্সিংয়ে AI-এর প্রাক-নির্ণয়ক্ষমতা ৯৫ শতাংশের বেশি নির্ভুলতা অর্জন করেছে। এখন প্রশ্ন হলো, যে প্রযুক্তি হাজারও মানুষের জীবন বাঁচাতে সক্ষম, তাকে কি কেবল কিছু কাল্পনিক আশঙ্কার ওপর দাঁড়িয়ে ‘হুমকি’ বলা চলে?
+        </p>
+
+        <p class="script-paragraph">
+          আর এখানেই বিষয়টির আরেকটি গুরুত্বপূর্ণ দিক সামনে আসে, যা আমাদের দ্বিতীয় যুক্তি—<span class="hl-green-kw">বিশ্বব্যাপী সংকট নিরসন এবং পরিবেশগত টেকসই রূপান্তর।</span> আজ জলবায়ু পরিবর্তন ও খাদ্য নিরাপত্তা পুরো মানব সভ্যতার অস্তিত্বকে চ্যালেঞ্জের মুখে ফেলেছে। <span class="hl-green-ref">United Nations (UN)</span> এবং <span class="hl-green-ref">Intergovernmental Panel on Climate Change (IPCC)</span>-এর বিভিন্ন গবেষণায় প্রতীয়মান যে, এআই-ভিত্তিক প্রেডিক্টিভ মডেলিং ব্যবহার করে জলবায়ুর চরম দুর্যোগের সঠিক পূর্বাবাস দেওয়া এবং কৃষিক্ষেত্রে ‘পিসিশন এগ্রিকালচার’ নিশ্চিত করা সম্ভব হচ্ছে। ফলস্বরূপ, খাদ্য উৎপাদন বৃদ্ধি পাচ্ছে এবং সেচ ও সারের অপচয় বহুলাংশে হ্রাস পাচ্ছে। <span class="hl-green-ref">বিশ্বব্যাংকের (World Bank)</span> সাম্প্রতিক প্রতিবেদনে দেখা গেছে, কৃত্রিম বুদ্ধিমত্তার দক্ষ গ্রিড ব্যবস্থাপনা এবং কার্বন ট্র্যাকিং প্রযুক্তি বৈশ্বিক কার্বন নিঃসরণ হ্রাসে তাৎপর্যপূর্ণ ভূমিকা রাখছে। মানব সভ্যতার সবচেয়ে বড় অস্তিত্ব সংকট যেখানে জলবায়ু পরিবর্তন, সেখানে AI আমাদের সবচেয়ে বড় সহায়ক বন্ধু হিসেবে কাজ করছে।
+        </p>
+
+        <p class="script-paragraph">
+          কিন্তু সম্মানিত বিচারকমণ্ডলী, বিষয়টি শুধু এখানেই শেষ নয়। <span class="hl-green-kw">শিক্ষা ও গবেষণার সার্বজনীনকরণে</span> AI যে বৈপ্লবিক ভূমিকা রাখছে, তা মানব সভ্যতার সাম্য প্রতিষ্ঠার পথকে সুগম করছে। <span class="hl-green-ref">UNESCO</span>-এর <span class="hl-green-ref">Global Education Monitoring Report</span> উল্লেখ করে কীভাবে ব্যক্তিগতকৃত শিক্ষা বা Personalised Learning-এর মাধ্যমে বিশ্বের প্রতিটি প্রান্তের শিক্ষার্থীর জন্য মানসম্মত শিক্ষার সুযোগ উন্মুক্ত হচ্ছে। শারীরিক প্রতিবন্ধকতা কিংবা ভৌগোলিক সীমাবদ্ধতা কাটিয়ে একটি শিশুও আজ AI-ভিত্তিক লার্নিং টুলের মাধ্যমে সমান তালে জ্ঞানার্জন করতে পারছে।
+        </p>
+
+        <p class="script-paragraph">
+          <span class="hl-green-kw">Let me make it clear</span>—প্রযুক্তির যেকোনো নতুন পদক্ষেপে একধরনের ভয় থাকে, কিন্তু সেই রূপান্তরকে ‘হুমকি’ হিসেবে চিহ্নিত করা প্রযুক্তিগত অজ্ঞতারই নামান্তর।
+        </p>
+
+        <!-- SEGMENT 3 (Part 1) -->
+        <div class="segment-title-box seg-red">
+          ৩. ⚔️ প্রতিপক্ষের বক্তব্য, প্রশ্ন ও যৌক্তিক খণ্ডন
+        </div>
+
+        <p class="script-paragraph">
+          এই পর্যায়ে আমি আমার সম্মানিত প্রতিপক্ষ দলের প্রতি কয়েকটি সরাসরি প্রশ্ন রাখতে চাই। আপনারা যদি দাবি করেন যে AI নিজেই মানব সভ্যতার জন্য হুমকি, তবে আপনাদের কাছে আমার প্রশ্ন—হুমকি কি প্রযুক্তির নিজস্ব সত্তা, নাকি তা মানুষের নীতি, ব্যবস্থাপনা ও নিয়ন্ত্রণের অভাব? <span class="hl-red-kw">Try to understand</span>, পারমাণবিক শক্তি দিয়ে যেমন বিদ্যুৎ তৈরি করা যায়, তেমনি তা দিয়ে মারণাস্ত্রও বানানো সম্ভব। তাহলে দায় কি পারমাণবিক বিজ্ঞানের, নাকি তা পরিচালনাকারী মানুষের সিদ্ধান্তের?
+        </p>
+
+      </div>
+
+      <div class="page-footer">
+        <div class="page-number-circle">2</div>
+      </div>
+    </div>
+
+
+    <!-- ==================== SECTION 4: SCRIPT PAGE 3 ==================== -->
+    <div class="page">
+      <div class="page-content">
+
+        <div class="document-header">
+          <span>আন্তঃবিদ্যালয় বিতর্ক প্রতিযোগিতা — বিপক্ষ দল</span>
+          <span>যৌক্তিক খণ্ডন ও সমাপ্তি</span>
+        </div>
+
+        <p class="script-paragraph">
+          আর এখানেই আমার পরবর্তী প্রশ্নটি আরও গুরুত্বপূর্ণ হয়ে ওঠে। আপনারা হয়তো চাকরির বাজার সংকুচিত হওয়া বা কর্মসংস্থান হারানোর আশঙ্কার কথা বলবেন। <span class="hl-red-ref">International Labour Organization (ILO)</span> এবং <span class="hl-red-ref">World Economic Forum (WEF)</span>-এর <span class="hl-red-ref">Future of Jobs Report</span> বিশ্লেষণ করলে দেখা যায়, AI পুরোনো ধাঁচের কিছু ম্যানুয়াল কাজ প্রতিস্থাপন করলেও তার চেয়ে অনেক বেশি নতুন, উচ্চ দক্ষতার ও সৃজনশীল কর্মসংস্থান সৃষ্টি করছে। ইতিহাস সাক্ষী, শিল্প বিপ্লবের সময়ও একই আশঙ্কার সৃষ্টি হয়েছিল, কিন্তু সভ্যতা থমকে যায়নি—বরং বিশ্ব এক নতুন অর্থনৈতিক উচ্চতায় পৌঁছেছিল।
+        </p>
+
+        <p class="script-paragraph">
+          <span class="hl-red-kw">That is exactly where the argument falls apart.</span> আপনারা প্রযুক্তির ব্যবহারজনিত ঝুঁকি আর প্রযুক্তির মৌলিক অস্তিত্বকে গুলিয়ে ফেলছেন। প্রতিপক্ষ বন্ধুরা হয়তো নিরাপত্তা, অ্যালগরিদমীয় বৈষম্য বা প্রাইভেসি লঙ্ঘনের মতো বিষয়ের দোহাই দেবেন। কিন্তু <span class="hl-red-ref">OECD</span> এবং <span class="hl-red-ref">ইইউ (EU)</span> ইতিমধ্যেই গঠনমূলক '<span class="hl-red-ref">AI Governance Framework</span>' তৈরি করেছে, যা ঝুঁকির লাগাম টেনে ধরে এর নিরাপদ ব্যবহার নিশ্চিত করছে। সুতরাং, যেখানে ঝুঁকিসমূহ নীতি ও নিয়ন্ত্রণের মাধ্যমে সমাধানযোগ্য, সেখানে পুরো প্রযুক্তিকেই হুমকি বলা যুক্তিযুক্ত নয়।
+        </p>
+
+        <!-- SEGMENT 4 -->
+        <div class="segment-title-box seg-yellow">
+          ৪. 🔥 সারসংক্ষেপ, চূড়ান্ত বক্তব্য ও সমাপ্তি
+        </div>
+
+        <p class="script-paragraph">
+          মাননীয় সভাপতি, পুরো বক্তব্যের পর যদি আমরা সামগ্রিক প্রেক্ষাপট সংক্ষেপে মেলাই, তবে সত্যটি দিবালোকের মতো স্পষ্ট হয়ে ওঠে।
+        </p>
+
+        <p class="script-paragraph">
+          কৃত্রিম বুদ্ধিমত্তা কোনো স্বাধীন, অনিয়ন্ত্রিত সত্তা নয় যা হঠাৎ মানব সভ্যতা ধ্বংস করে দেবে। এটি মানুষেরই মস্তিষ্ক ও প্রজ্ঞার এক অসাধারণ সম্প্রসারণ। AI চিকিৎসায় গতি এনেছে, শিক্ষাকে সর্বজনীন করেছে, বৈশ্বিক জলবায়ু সংকটে পথ দেখাচ্ছে এবং অর্থনৈতিক কর্মকাণ্ডকে করছে শতগুণ দ্রুত।
+        </p>
+
+        <p class="script-paragraph">
+          আমরা স্পষ্ট করে বলে দিতে চাই—AI-এর কিছু অপব্যবহার বা নিয়ন্ত্রণহীনতার ঝুঁকি থাকা আর “AI সার্বিকভাবে মানব সভ্যতার জন্য হুমকি” হয়ে যাওয়া দুটি সম্পূর্ণ ভিন্ন বিষয়। ছুরি দিয়ে অস্ত্রোপচার করে জীবন বাঁচানো যায়, আবার আঘাতও করা যায়—কিন্তু তাই বলে ছুরি আবিষ্কারকে মানবজাতির শত্রু বলা যায় না।
+        </p>
+
+        <p class="script-paragraph">
+          <span class="hl-yellow-kw">The real question is</span>—আমরা কি ভয়ে পিছিয়ে যাব, নাকি বুদ্ধিমত্তা ও সঠিক নীতিমালা দিয়ে প্রযুক্তিকে জয় করব? বিপক্ষ দল হিসেবে আমাদের বিশ্বাস, মানবজাতি AI-কে নিয়ন্ত্রণ করেই এক নতুন ও সমৃদ্ধ সভ্যতার দিকে এগিয়ে যাবে।
+        </p>
+
+        <p class="script-paragraph">
+          সম্মানিত বিচারকমণ্ডলী, <span class="hl-yellow-kw">AI মানব সভ্যতার জন্য কোনো হুমকি নয়, এটি মানুষের সম্ভাবনারই এক নতুন সূর্য।</span>
+        </p>
+
+        <p class="script-paragraph">
+          এই প্রত্যয় ব্যক্ত করে, সবাইকে অনেক অনেক ধন্যবাদ জানিয়ে আমার বক্তব্য এখানেই শেষ করছি। শুভ বিতর্ক!
+        </p>
+
+      </div>
+
+      <div class="page-footer">
+        <div class="page-number-circle">3</div>
+      </div>
+    </div>
+
+  </div>
+
+</body>
+</html>
